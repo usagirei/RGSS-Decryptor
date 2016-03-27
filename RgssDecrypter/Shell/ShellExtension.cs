@@ -6,6 +6,7 @@ using System;
 using System.Reflection;
 
 using Microsoft.Win32;
+using RgssDecrypter.Options;
 
 namespace RgssDecrypter.Shell
 {
@@ -17,9 +18,9 @@ namespace RgssDecrypter.Shell
 
         private static readonly string[] EXTENSIONS = {".rgssad", ".rgss2a", ".rgss3a"};
 
-        public static void RegisterExtensions()
+        public static void RegisterExtensions(ProgramArguments opts)
         {
-            RegisterProgID();
+            RegisterProgID(opts);
 
             foreach (var ext in EXTENSIONS)
             {
@@ -43,7 +44,7 @@ namespace RgssDecrypter.Shell
             NativeMethods.SHChangeNotify(NativeMethods.SHCNE_ASSOCCHANGED, NativeMethods.SHCNF_IDLIST, IntPtr.Zero, IntPtr.Zero);
         }
 
-        private static void RegisterProgID()
+        private static void RegisterProgID(ProgramArguments opts)
         {
             var app = Assembly.GetExecutingAssembly().Location;
 
@@ -57,7 +58,15 @@ namespace RgssDecrypter.Shell
             extractKey.SetValue("", EXTMENU);
 
             var cmdKey = extractKey.CreateSubKey("command");
-            cmdKey.SetValue("", $"\"{app}\" \"%1\" -p", RegistryValueKind.String);
+            var cmdString = $"\"{app}\" \"%1\"";
+
+            if (opts.CreateProjectFile)
+                cmdString += " -p";
+
+            if (opts.SupressOutput)
+                cmdString += " -q";
+
+            cmdKey.SetValue("", cmdString, RegistryValueKind.String);
         }
 
         private static void UnregisterProgID()

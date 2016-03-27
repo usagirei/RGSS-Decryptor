@@ -24,12 +24,12 @@ Or Simply Drag and Drop the RGSS Archive on the executable
 |Short|Full       |Description                        |
 |-----|-----------|-----------------------------------|
 |?    |help       |Displays Help Message              |
-|r    |register   |Registers Context Menu Handler     |
-|u    |unregister |Unregisters Context Menu Handler   |
 |d    |dump       |Dumps Archive Information Only     |
 |o    |output     |Output Directory (Relative)        |
 |p    |proj       |Creates Project File               |
-
+|q    |quiet      |Supresses Output                   |
+|r    |register   |Registers Context Menu Handler     |
+|u    |unregister |Unregisters Context Menu Handler   |
 
 
 ### **Examples**

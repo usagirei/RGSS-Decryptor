@@ -4,7 +4,6 @@
 
 using System;
 using System.IO;
-
 using RgssDecrypter.Lib;
 
 namespace RgssDecrypter
@@ -90,7 +89,7 @@ namespace RgssDecrypter
             Console.WriteLine(footer);
         }
 
-        private static void ExtractFiles(RgssArchive archive, string outDir)
+        private static void ExtractFiles(RgssArchive archive, string outDir, bool supress)
         {
             var fileCount = archive.FilePointers.Count;
             var fileCurr = 0;
@@ -102,20 +101,24 @@ namespace RgssDecrypter
             foreach (var pointer in archive.FilePointers)
             {
                 var targetPath = Path.Combine(outDir, pointer.Name);
-                var digits = Math.Floor(Math.Log10(fileCount) + 1);
-                var fmt = File.Exists(targetPath)
-                              ? "\x1B[31m[{1," + digits + "}/{2}] Overwrite:\x1B[37m {0}\x1B[0m\x1B[39m"
-                              : "\x1B[32m[{1," + digits + "}/{2}] Create   :\x1B[37m {0}\x1B[0m\x1B[39m";
 
-                var nameHighlight
-                    = "\x1B[1;30m"
-                      + pointer.Name.Insert(pointer.Name.LastIndexOf('\\') + 1, "\x1B[37m")
-                      + "\x1B[2;37m";
+                if (!supress)
+                {
+                    var digits = Math.Floor(Math.Log10(fileCount) + 1);
+                    var fmt = File.Exists(targetPath)
+                        ? "\x1B[31m[{1," + digits + "}/{2}] Overwrite:\x1B[37m {0}\x1B[0m\x1B[39m"
+                        : "\x1B[32m[{1," + digits + "}/{2}] Create   :\x1B[37m {0}\x1B[0m\x1B[39m";
 
-                Console.WriteLine(fmt,
-                    nameHighlight,
-                    ++fileCurr,
-                    fileCount);
+                    var nameHighlight
+                        = "\x1B[1;30m"
+                          + pointer.Name.Insert(pointer.Name.LastIndexOf('\\') + 1, "\x1B[37m")
+                          + "\x1B[2;37m";
+
+                    Console.WriteLine(fmt,
+                        nameHighlight,
+                        ++fileCurr,
+                        fileCount);
+                }
 
                 var targetDir = Path.GetDirectoryName(targetPath);
                 Directory.CreateDirectory(targetDir);
@@ -126,7 +129,7 @@ namespace RgssDecrypter
             }
         }
 
-        static partial void SubMain(Arguments args)
+        static partial void SubMain(ProgramArguments args)
         {
             if (args.UnregisterContext)
             {
@@ -135,7 +138,7 @@ namespace RgssDecrypter
             }
             if (args.RegisterContext)
             {
-                Shell.ShellExtension.RegisterExtensions();
+                Shell.ShellExtension.RegisterExtensions(args);
 
                 Console.WriteLine("\x1B[32mRegistered Shell Extension\x1B[39m");
             }
@@ -150,16 +153,15 @@ namespace RgssDecrypter
             if (args.InfoDump)
             {
                 DumpInfo(archive);
-            }
-            else
+            } else
             {
-                ExtractFiles(archive, outDir);
+                ExtractFiles(archive, outDir, args.SupressOutput);
                 if (args.CreateProjectFile)
                     CreateProjectFile(args.RgssArchive, outDir);
             }
         }
 
-        private static bool TryOpenArchive(Arguments args, out RgssArchive archive)
+        private static bool TryOpenArchive(ProgramArguments args, out RgssArchive archive)
         {
             var ver = RgssArchive.GetVersion(args.RgssArchive);
 

@@ -51,7 +51,7 @@ namespace RgssDecrypter
 
             var unparsed = new List<string>();
             var opts = new OptionSet();
-            var argsObj = new Arguments();
+            var argsObj = new ProgramArguments();
 
             opts.Add("<>",
                 arg =>
@@ -76,18 +76,6 @@ namespace RgssDecrypter
                     Environment.Exit(0);
                 });
 
-            opts.Add("r|register",
-                "Registers Context Menu Handler",
-                arg => argsObj.RegisterContext = true);
-
-            opts.Add("q|quiet",
-                "Supresses Output",
-                arg => argsObj.SupressOutput = true);
-
-            opts.Add("u|unregister",
-                "Unregisters Context Menu Handler",
-                arg => argsObj.UnregisterContext = true);
-
             opts.Add("d|dump",
                 $"Only Dumps Archive Information\n(Default: {argsObj.InfoDump})",
                 arg => argsObj.InfoDump = true);
@@ -99,6 +87,18 @@ namespace RgssDecrypter
             opts.Add("p|proj",
                 $"Creates Project File.\n(Default: {argsObj.CreateProjectFile})",
                 arg => argsObj.CreateProjectFile = true);
+
+            opts.Add("q|quiet",
+                $"Supresses Output. \n(Default: {argsObj.SupressOutput})",
+                arg => argsObj.SupressOutput = true);
+
+            opts.Add("r|register",
+                "Registers Context Menu Handler",
+                arg => argsObj.RegisterContext = true);
+
+            opts.Add("u|unregister",
+                "Unregisters Context Menu Handler",
+                arg => argsObj.UnregisterContext = true);
 
             if (args.Length == 0) {
                 PrintHelp(opts);
@@ -126,6 +126,7 @@ namespace RgssDecrypter
         {
             var exeName = Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().Location);
             Console.WriteLine($"Usage: {exeName} [options] <RgssArch>");
+            Console.WriteLine();
             Console.WriteLine("Options:");
             opts.WriteOptionDescriptions(Console.Out);
         }
@@ -138,18 +139,6 @@ namespace RgssDecrypter
             Console.WriteLine($"The syntax of the command is incorrect.\nCall '{exeName} /?' for more information.");
         }
 
-        static partial void SubMain(Arguments args);
-
-        private class Arguments
-        {
-            public bool CreateProjectFile { get; set; } = false;
-            public bool InfoDump { get; set; } = false;
-            public string OutputDir { get; set; } = ".";
-
-            public bool RegisterContext { get; set; } = false;
-            public string RgssArchive { get; set; } = string.Empty;
-            public bool UnregisterContext { get; set; } = false;
-            public bool SupressOutput { get; set; } = false;
-        }
+        static partial void SubMain(ProgramArguments args);
     }
 }
