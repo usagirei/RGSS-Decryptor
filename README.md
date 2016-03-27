@@ -47,6 +47,10 @@ To Install the Shell Extension (Right Click -> Extract with RGSS Decryptor)
 
 	RgssDecrypter --register
 
+To Install the Shell Extension with Quiet and Project Flags
+
+	RgssDecrypter -rqp
+
 To Uninstall the Shell Extension
 
 	RgssDecrypter --unregister
