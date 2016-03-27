@@ -106,6 +106,12 @@ namespace RgssDecrypter
                 $"Creates Project File.\n(Default: {argsObj.CreateProjectFile})",
                 arg => argsObj.CreateProjectFile = true);
 
+            if (args.Length == 0)
+            {
+                PrintHelp(opts);
+                Environment.Exit(1);
+            }
+
             var ext = opts.Parse(args);
             SubMain(argsObj);
         }
