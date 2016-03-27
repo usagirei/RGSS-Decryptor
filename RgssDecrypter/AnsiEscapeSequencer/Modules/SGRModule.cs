@@ -119,9 +119,9 @@ namespace RgssDecrypter.AnsiEscapeSequencer.Modules
         private void ResetBackColor()
         {
             if (IsInverted)
-                Console.BackgroundColor = _defaultBack;
-            else
                 Console.ForegroundColor = _defaultBack;
+            else
+                Console.BackgroundColor = _defaultBack;
         }
 
         private void ResetForeColor()

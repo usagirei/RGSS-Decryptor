@@ -2,7 +2,7 @@
 // RgssDecrypter - Program.EntryPoint.cs
 // --------------------------------------------------
 
-#define ANSI
+//#define ANSI
 
 using System;
 using System.Collections.Generic;
