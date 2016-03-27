@@ -61,9 +61,9 @@ namespace RgssDecrypter
 
         private static void DumpInfo(RgssArchive archive)
         {
-            const string headFormat = "\x1B[39m{0,-6}|{1,-8}|{2,-42}|{3,-10}|{4,-8}";
+            const string headFormat = "\x1B[39m{0,-6}|{1,-8}|{2,-42}|{3,-10}|{4,-8}\x1B[39m";
             const string rowFormat =
-                "\x1B[39m{0,6}\x1B[0m|\x1B[31m{1:X8}\x1B[39m|{2}\x1B[39m|\x1B[40m{3,-10}\x1B[39m|\x1B[32m{4:X8}\x1B[39m";
+                "\x1B[39m{0,6}\x1B[39m|\x1B[31m{1:X8}\x1B[39m|{2}\x1B[39m|\x1B[40m{3,-10}\x1B[39m|\x1B[32m{4:X8}\x1B[39m";
 
             var header = string.Format(headFormat, "Num", "Offset", "Name", "Size Bytes", "Key");
             var footer = string.Format(headFormat,
