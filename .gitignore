@@ -10,6 +10,10 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+# Project Specific
+
+RgssDecrypter.Sandbox/
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
