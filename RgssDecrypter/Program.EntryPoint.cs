@@ -8,13 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-
 using Microsoft.Win32;
-
 using RgssDecrypter.AnsiEscapeSequencer;
 using RgssDecrypter.AnsiEscapeSequencer.Modules;
 using RgssDecrypter.Options;
-
 
 namespace RgssDecrypter
 {
@@ -28,22 +25,20 @@ namespace RgssDecrypter
             return productName.Contains(name);
         }
 
-        public static bool IsWindows10()
-        {
-            return IsCurrentOSContains("Windows 10");
-        }
+        public static bool IsWindows10() { return IsCurrentOSContains("Windows 10"); }
 
         private static T GetAttribute<T>(ICustomAttributeProvider t)
         {
-            var attribs = t.GetCustomAttributes(typeof(T), true);
-            return (T) (attribs.Length > 0 ? attribs[0] : null);
+            var attribs = t.GetCustomAttributes(typeof (T), true);
+            return (T) (attribs.Length > 0
+                ? attribs[0]
+                : null);
         }
 
         static void Main(string[] args)
         {
 #if !ANSI
-            if (!IsWindows10())
-            {
+            if (!IsWindows10()) {
                 AnsiSequencer.Enable();
                 AnsiSequencer.EnableModule<SGRModule>();
             }
@@ -62,17 +57,12 @@ namespace RgssDecrypter
                 arg =>
                 {
                     var m = OptionSet.ValueOptionRegex.Match(arg);
-                    if (m.Success)
-                    {
+                    if (m.Success) {
                         PrintInvalid(m.Groups["name"].Value);
                         Environment.Exit(1);
-                    }
-                    else if (File.Exists(arg))
-                    {
+                    } else if (File.Exists(arg)) {
                         argsObj.RgssArchive = arg;
-                    }
-                    else
-                    {
+                    } else {
                         unparsed.Add(arg);
                     }
                 }
@@ -90,6 +80,10 @@ namespace RgssDecrypter
                 "Registers Context Menu Handler",
                 arg => argsObj.RegisterContext = true);
 
+            opts.Add("q|quiet",
+                "Supresses Output",
+                arg => argsObj.SupressOutput = true);
+
             opts.Add("u|unregister",
                 "Unregisters Context Menu Handler",
                 arg => argsObj.UnregisterContext = true);
@@ -106,8 +100,7 @@ namespace RgssDecrypter
                 $"Creates Project File.\n(Default: {argsObj.CreateProjectFile})",
                 arg => argsObj.CreateProjectFile = true);
 
-            if (args.Length == 0)
-            {
+            if (args.Length == 0) {
                 PrintHelp(opts);
                 Environment.Exit(1);
             }
@@ -118,8 +111,8 @@ namespace RgssDecrypter
 
         private static void PrintHeader()
         {
-            var assName = GetAttribute<AssemblyFileVersionAttribute>(typeof(Program).Assembly);
-            var comName = GetAttribute<AssemblyCompanyAttribute>(typeof(Program).Assembly);
+            var assName = GetAttribute<AssemblyFileVersionAttribute>(typeof (Program).Assembly);
+            var comName = GetAttribute<AssemblyCompanyAttribute>(typeof (Program).Assembly);
             const string headerFmt = "--- RGSS Decryptor {0} - by {1} ---";
             var header = string.Format(headerFmt,
                 assName.Version,
@@ -156,6 +149,7 @@ namespace RgssDecrypter
             public bool RegisterContext { get; set; } = false;
             public string RgssArchive { get; set; } = string.Empty;
             public bool UnregisterContext { get; set; } = false;
+            public bool SupressOutput { get; set; } = false;
         }
     }
 }
