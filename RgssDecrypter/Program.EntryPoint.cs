@@ -17,15 +17,32 @@ namespace RgssDecrypter
 {
     partial class Program
     {
-        public static bool IsCurrentOSContains(string name)
+        /// <summary>
+        /// Use on Windows Only
+        /// </summary>
+        public static bool CurrentOSContains(string name)
         {
             var reg = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
             string productName = (string) reg.GetValue("ProductName");
 
             return productName.Contains(name);
+
         }
 
-        public static bool IsWindows10() { return IsCurrentOSContains("Windows 10"); }
+        public static bool IsAnsiCompilant()
+        {
+            var os = Environment.OSVersion;
+            switch (os.Platform)
+            {
+                case PlatformID.Win32NT:
+                    return CurrentOSContains("Windows 10");
+                case PlatformID.Unix:
+                case PlatformID.MacOSX:
+                    return true;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
         private static T GetAttribute<T>(ICustomAttributeProvider t)
         {
@@ -38,7 +55,7 @@ namespace RgssDecrypter
         static void Main(string[] args)
         {
 #if !ANSI
-            if (!IsWindows10()) {
+            if (!IsAnsiCompilant()) {
                 AnsiSequencer.Enable();
                 AnsiSequencer.EnableModule<SGRModule>();
             }
