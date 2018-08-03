@@ -135,7 +135,12 @@ namespace RgssDecrypter
                 assName.Version,
                 comName.Company);
             var len = header.Length;
-            header = "\x1B[" + ((Console.BufferWidth - len) / 2) + "G" + header;
+			try {
+				header = "\x1B[" + ((Console.BufferWidth - len) / 2) + "G" + header;
+			}
+			catch(IOException) {
+				// BufferWidth might not be available, e.g. when redirecting stdout 
+			}
             Console.WriteLine(header);
         }
 
